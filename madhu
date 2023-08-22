@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace TRACTOR_SERVICE
+{
+    public class Program
+    {
+        private const string V = "Data Source=DESKTOP-ANCV28\1SQL2019; Initial Catalog=madhu; Integrated Security=True";
+
+        public static void CallStoredProcedure(int custId, string custName, DateTime serviceDate, int serviceDuration, string operation)
+        {
+            string connectionString = V;
+
+            using (SqlConnection connection = new SqlConnection(connectionString)) 
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SP_MANAGE_TRACTOR_SERVICE1", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Add parameters and set their values
+                command.Parameters.AddWithValue("@p_CUST_ID", 1); // Replace 1 with the desired customer ID
+                command.Parameters.AddWithValue("@p_CUST_NAME", "Customer Name"); // Replace "Customer Name" with the desired customer name
+                command.Parameters.AddWithValue("@p_SERVICE_DATE", DateTime.Now); // Replace DateTime.Now with the desired service date
+                command.Parameters.AddWithValue("@p_SERVICE_DURATION", 5); // Replace 5 with the desired service duration
+                command.Parameters.AddWithValue("@p_OPERATION", "INSERT"); // Replace "INSERT" with the desired operation
+
+                try
+                {
+                    // Execute the stored procedure
+                    command.ExecuteNonQuery();
+                    Console.WriteLine("Stored procedure executed successfully.");
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("Error executing the stored procedure: " + ex.Message);
+                }
+
+            }
+        }
+    }
+}
